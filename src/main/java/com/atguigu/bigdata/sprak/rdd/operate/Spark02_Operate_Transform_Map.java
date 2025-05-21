@@ -3,12 +3,14 @@ package com.atguigu.bigdata.sprak.rdd.operate;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
 import scala.Tuple1;
 import scala.Tuple2;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class Spark01_Operate {
+public class Spark02_Operate_Transform_Map {
     public static void main(String[] args) {
         // 添加这行代码设置hadoop.home.dir
         System.setProperty("hadoop.home.dir", "D:\\software\\hadoop");  // 替换为你的实际路径
@@ -22,36 +24,35 @@ public class Spark01_Operate {
 
         JavaSparkContext javaSparkContext = new JavaSparkContext(sparkConf);
 
+        List<Integer> nums = Arrays.asList(1, 2, 3, 4);
+
         // TODO RDD方法
+        // 【1,2】  【3,4】
         JavaRDD<Integer> javaRDD = javaSparkContext.parallelize(
-                Arrays.asList(1, 2, 3)
+               nums,2
         );
 
-        // RDD的方法有很多，主要讲解核心，重要的方法
-        // 学习的重点：
+        // TODO RDD的转换方法：map
+        //      对单值数据进行处理
+
+        // map : 映射 (K -> V)，将A(K)转换成B(V)
+        //       将指定的值转换为其他的值的场合
+        //       [1,2,3,4] -> [2,4,6,8]
+        // 学习方法的重点：
         //      1. 名字
         //      2. IN参数
         //      3. OUT参数
+        JavaRDD<Object> mapRDD = javaRDD.map(new Function<Integer, Object>() {
+            @Override
+            public Object call(Integer in) throws Exception {
+                return in * 2;
+            }
+        });
 
-        // RDD的方法会有很多，但是分为两类
-        //      1. 转换方法 ：将数据向后流转
-        //      2. 行动方法 ：打开数据开关
+        mapRDD.collect().forEach(System.out::println);
+        System.out.println("=====================================");
+        System.out.println(nums);
 
-        // RDD方法处理数据的分类：
-        // 1.单值 ：1,， “abc”, new User(), new ArrayList()
-        // 2.键值 : KV => (Key, Value)
-        //      word -> count
-
-        // TODO JDK1.8以后也存在元祖，采用特殊的类 ： TupleX
-        Tuple1<String> abc = new Tuple1<>("abc");
-        Tuple2<String, Integer> a = new Tuple2<>("a", 1);
-        System.out.println(a._1);
-        System.out.println(a._1());
-        System.out.println(a._2);
-        System.out.println(a._2());
-        // 马丁的幸运数字是22
-        // 元祖的最大数据容量是22
-        // new Tuple22<>();
 
         javaSparkContext.close();
     }
