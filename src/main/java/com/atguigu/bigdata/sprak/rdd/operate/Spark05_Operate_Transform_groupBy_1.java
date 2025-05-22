@@ -1,0 +1,55 @@
+package com.atguigu.bigdata.sprak.rdd.operate;
+
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class Spark05_Operate_Transform_groupBy_1 {
+    public static void main(String[] args) {
+        // 添加这行代码设置hadoop.home.dir
+        System.setProperty("hadoop.home.dir", "D:\\software\\hadoop");  // 替换为你的实际路径
+
+        // 添加这行解决Windows下的Hadoop原生库问题
+        System.load("D:\\software\\hadoop\\bin\\hadoop.dll");
+
+        SparkConf sparkConf = new SparkConf();
+        sparkConf.setMaster("local[2]");
+        sparkConf.setAppName("Spark");
+
+        JavaSparkContext javaSparkContext = new JavaSparkContext(sparkConf);
+
+        List<Integer> nums = Arrays.asList(1, 2, 3, 4);
+
+        JavaRDD<Integer> javaRDD = javaSparkContext.parallelize(
+               nums,3
+        );
+
+        // TODO RDD的方法 ： groupBy，按照指定的规则对数据进行分组
+//        javaRDD.groupBy(new Function<Integer, Object>() {
+//            @Override
+//            public Object call(Integer integer) throws Exception {
+////                if (integer % 2 == 0) {
+////                    return true;
+////                }else {
+////                    return  false;  //  组的名称，此处需要实现分组逻辑
+////                }
+//
+//                return integer % 2 == 0;
+//            }
+//        })
+        javaRDD.
+                groupBy( num -> num % 2 == 0)
+                .collect().
+                forEach(System.out::println);
+
+
+
+
+
+        javaSparkContext.close();
+    }
+}
