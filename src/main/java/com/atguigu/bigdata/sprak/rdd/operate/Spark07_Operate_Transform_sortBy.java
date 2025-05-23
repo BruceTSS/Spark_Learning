@@ -7,7 +7,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 import java.util.Arrays;
 import java.util.List;
 
-public class Spark06_Operate_Transform_sortBy {
+public class Spark07_Operate_Transform_sortBy {
     public static void main(String[] args) {
         // 添加这行代码设置hadoop.home.dir
         System.setProperty("hadoop.home.dir", "D:\\software\\hadoop");  // 替换为你的实际路径
